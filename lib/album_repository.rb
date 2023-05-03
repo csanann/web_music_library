@@ -1,36 +1,24 @@
-#file: lib/albums_repo.rb
-require 'albums'
-require_relative 'database_connection'
+#file: lib/album_repository.rb
 
-class AlbumsRepository
-    # Selecting all records
-    # No arguments
-  def all
-    albums = []
-      # Executes the SQL query:
-    sql = 'SELECT id, title, release_year, artist_id FROM albums;'
-    result_set = DatabaseConnection.exec_params(sql, [])
-
-      result_set.each do |record|
-        album = Albums.new
-        
-        album.id = record['id']
-        album.title = record['title']
-        album.release_year = record['release_year']
-        album.artist_id = record['artist_id']
-
-        albums << album
-      end
-     # Returns an array of Album objects.
-      return albums
-  end
-
-  def find(id)
-    sql = 'SELECT * FROM albums WHERE id = $1;'
-    params = [id]
-    result = DatabaseConnection.exec_params(sql, params)
-
-    row = result.first
-    Albums.new(row['id'], row['title'], row['artist'])
-  end
-end
+class AlbumRepository
+    def initialize
+      @albums = [
+        { 'id' => 1, 'title' => 'Doolittle', 'artist_id' => 1 },
+        { 'id' => 2, 'title' => 'Surfer Rosa', 'artist_id' => 1 },
+        { 'id' => 3, 'title' => 'Waterloo', 'artist_id' => 2 },
+        { 'id' => 4, 'title' => 'Super Trouper', 'artist_id' => 2 },
+        { 'id' => 5, 'title' => 'Bossanova', 'artist_id' => 1 },
+        { 'id' => 6, 'title' => 'Lover', 'artist_id' => 3 },
+        { 'id' => 7, 'title' => 'Folklore', 'artist_id' => 3 },
+        { 'id' => 8, 'title' => 'I Put a Spell on You', 'artist_id' => 4 },
+        { 'id' => 9, 'title' => 'Baltimore', 'artist_id' => 4 },
+        { 'id' => 10, 'title' => 'Here Comes the Sun', 'artist_id' => 5 },
+        { 'id' => 11, 'title' => 'Fodder on My Wings', 'artist_id' => 4 },
+        { 'id' => 12, 'title' => 'Ring Ring', 'artist_id' => 2 }
+      ]
+    end
+  
+    def all
+      @albums
+    end
+  end  

@@ -1,6 +1,10 @@
 #file: albums.rb
-class Albums
-
+#class Albums
+=begin
+    
+rescue => exception
+    
+end
     # Replace the attributes by your own columns.
     attr_accessor :id, :title, :release_year, :artist_id
 
@@ -10,4 +14,4 @@ class Albums
         @release_year = release_year
         @artist_id = artist_id
     end
-end
+=end
