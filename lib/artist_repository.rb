@@ -1,21 +1,49 @@
 #file: lib/artist_repository.rb
 
+require_relative 'artist'
+
 class ArtistRepository
-    def initialize
-      @artists = [
-        { 'id' => 1, 'name' => 'Pixies' },
-        { 'id' => 2, 'name' => 'ABBA' },
-        { 'id' => 3, 'name' => 'Taylor Swift' },
-        { 'id' => 4, 'name' => 'Nina Simone' },
-        { 'id' => 5, 'name' => 'The Beatles' }
-      ]
+  def all
+    artists = []
+
+    # Send the SQL query and get the result set.
+    sql = 'SELECT id, name, genre FROM artists;'
+    result_set = DatabaseConnection.exec_params(sql, [])
+    
+    # The result set is an array of hashes.
+    # Loop through it to create a model
+    # object for each record hash.
+    result_set.each do |record|
+
+      # Create a new model object
+      # with the record data.
+      artist = Artist.new
+      artist.id = record['id'].to_i
+      artist.name = record['name']
+      artist.genre = record['genre']
+
+      artists << artist
     end
-  
-    def all
-      @artists
-    end
-  
-    def find_by_id(artist_id)
-      @artists.find { |artist| artist['id'] == artist_id }
-    end
-  end  
+
+    return artists
+  end
+
+  def find(id)
+    sql = 'SELECT id, name, genre FROM artists WHERE id = $1;'
+    result_set = DatabaseConnection.exec_params(sql, [id])
+
+    artist = Artist.new
+    artist.id = result_set[0]['id'].to_i
+    artist.name = result_set[0]['name']
+    artist.genre = result_set[0]['genre']
+
+    return artist
+  end
+
+  def create(artist)
+    sql = 'INSERT INTO artists (name, genre) VALUES ($1, $2);'
+    result_set = DatabaseConnection.exec_params(sql, [artist.name, artist.genre])
+
+    return artist
+  end
+end

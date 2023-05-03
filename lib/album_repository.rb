@@ -1,24 +1,56 @@
 #file: lib/album_repository.rb
 
+require_relative 'album'
+
 class AlbumRepository
-    def initialize
-      @albums = [
-        { 'id' => 1, 'title' => 'Doolittle', 'artist_id' => 1 },
-        { 'id' => 2, 'title' => 'Surfer Rosa', 'artist_id' => 1 },
-        { 'id' => 3, 'title' => 'Waterloo', 'artist_id' => 2 },
-        { 'id' => 4, 'title' => 'Super Trouper', 'artist_id' => 2 },
-        { 'id' => 5, 'title' => 'Bossanova', 'artist_id' => 1 },
-        { 'id' => 6, 'title' => 'Lover', 'artist_id' => 3 },
-        { 'id' => 7, 'title' => 'Folklore', 'artist_id' => 3 },
-        { 'id' => 8, 'title' => 'I Put a Spell on You', 'artist_id' => 4 },
-        { 'id' => 9, 'title' => 'Baltimore', 'artist_id' => 4 },
-        { 'id' => 10, 'title' => 'Here Comes the Sun', 'artist_id' => 5 },
-        { 'id' => 11, 'title' => 'Fodder on My Wings', 'artist_id' => 4 },
-        { 'id' => 12, 'title' => 'Ring Ring', 'artist_id' => 2 }
-      ]
+  def all
+    albums = []
+
+    # Send the SQL query and get the result set.
+    sql = 'SELECT id, title, release_year, artist_id FROM albums;'
+    result_set = DatabaseConnection.exec_params(sql, [])
+    
+    # The result set is an array of hashes.
+    # Loop through it to create a model
+    # object for each record hash.
+    result_set.each do |record|
+
+      # Create a new model object
+      # with the record data.
+      album = Album.new
+      album.id = record['id'].to_i
+      album.title = record['title']
+      album.release_year = record['release_year']
+      album.artist_id = record['artist_id'].to_i
+
+      albums << album
     end
-  
-    def all
-      @albums
-    end
-  end  
+
+    return albums
+  end
+
+  def find(id)
+    sql = 'SELECT id, title, release_year, artist_id FROM albums WHERE id = $1;'
+    result_set = DatabaseConnection.exec_params(sql, [id])
+
+    album = Album.new
+    album.id = result_set[0]['id'].to_i
+    album.title = result_set[0]['title']
+    album.release_year = result_set[0]['release_year']
+    album.artist_id = result_set[0]['artist_id'].to_i
+
+    return album
+  end
+
+  def create(album)
+    sql = 'INSERT INTO albums (title, release_year, artist_id) VALUES ($1, $2, $3);'
+    result_set = DatabaseConnection.exec_params(sql, [album.title, album.release_year, album.artist_id])
+
+    return album
+  end
+
+  def delete(id)
+    sql = 'DELETE FROM albums WHERE id = $1;';
+    DatabaseConnection.exec_params(sql, [id]);
+  end
+end  
