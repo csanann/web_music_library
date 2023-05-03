@@ -1,10 +1,11 @@
-# Music Library Manager
-This is a simple Ruby console application that manages a music library by allowing users to list all albums or artists.
+# Music Library test-driving CRUD routes in a Sinatra Application
+The project focuses on building and testing CRUD routes in a Sinatra web application that interacts with a database. The goal is to practice TDD while implementing routes to create, read, update and delete resources.
 
-## This challenge is about wrapping the program in an Application class.
-
-## Challenge and Purpose
-The purpose of this application is to help us learn and practice Ruby programming concepts such as object-oriented programming, file I/O, and testing. The challenge in building this application is to correctly design and implement the necessary classes and methods to achieve the desired functionality.
+## What we did
+I implemented and test-drove the following routes for managing artists and albums:
+- 'GET /artists': Returns the list of artist
+- 'POST /artists': Creates a new artist and returns 200 OK
+I also created a sequence diagram to explain the behavior of the program when a request is sent to 'POST /artist'.
 
 ## Conclusion
-Overall, the Music Library Manager is a simple useful tool for managing a music library. With this application, users can easily view all albums and artists in their collection. this project provides a great opportunity to learn and practice fundamental Ruby concepts, while also building a useful application.
+By following the TDD approach, I was able to ensure the correctness, maintainability, and readability of mine code. The project helped me gain a deeper understanding of CRUD operations, RESTful routing patterns, and working with database-backed classes in a Sinatra application.

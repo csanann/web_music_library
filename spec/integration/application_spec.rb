@@ -10,4 +10,28 @@ describe Application do
   # class so our tests work.
   let(:app) { Application.new }
 
+  context "GET /artists" do
+    it 'returns the list of artists' do
+      response = get('/artists')
+
+      expect_response = 'Pixies, ABBA, Taylor Swift, Nina Simone, Kiasmos'
+
+      expect(response.status).to eq(200)
+      expect(response.body).to eq(expect_response)
+    end
+  end
+  
+
+  context "POST /artists" do
+    it 'creates a new artist' do
+      response = post('/artists', id: '1', name: 'Wild nothing', genre: 'Indie')
+
+      expect(response.status).to eq(200)
+      expect(response.body).to eq('')
+
+      response = get('/artists')
+
+      expect(response.body).to include('Wild nothing')
+    end
+  end
 end
