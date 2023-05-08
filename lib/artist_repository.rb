@@ -1,49 +1,39 @@
-#file: lib/artist_repository.rb
+
+# lib/artist_repository.rb
 
 require_relative 'artist'
+require 'artists_list.csv'
 
 class ArtistRepository
+  def initialize(file_path)
+    @file_path = 'data/artists_list.csv'
+  end
+
   def all
     artists = []
 
-    # Send the SQL query and get the result set.
-    sql = 'SELECT id, name, genre FROM artists;'
-    result_set = DatabaseConnection.exec_params(sql, [])
-    
-    # The result set is an array of hashes.
-    # Loop through it to create a model
-    # object for each record hash.
-    result_set.each do |record|
-
-      # Create a new model object
-      # with the record data.
+    CSV.foreach(@file_path, headers: true) do |row|
       artist = Artist.new
-      artist.id = record['id'].to_i
-      artist.name = record['name']
-      artist.genre = record['genre']
-
+      artist.id = row['id'].to_i
+      artist.name = row['name']
+      artist.genre = row['genre']
       artists << artist
     end
 
-    return artists
+    artists
   end
 
   def find(id)
-    sql = 'SELECT id, name, genre FROM artists WHERE id = $1;'
-    result_set = DatabaseConnection.exec_params(sql, [id])
+    CSV.foreach(@file_path, headers: true) do |row|
+      if row['id'].to_i == id
+        artist = Artist.new
+        artist.id = row['id'].to_i
+        artist.name = row['name']
+        artist.genre = row['genre']
+        return artist
+      end
+    end
 
-    artist = Artist.new
-    artist.id = result_set[0]['id'].to_i
-    artist.name = result_set[0]['name']
-    artist.genre = result_set[0]['genre']
-
-    return artist
-  end
-
-  def create(artist)
-    sql = 'INSERT INTO artists (name, genre) VALUES ($1, $2);'
-    result_set = DatabaseConnection.exec_params(sql, [artist.name, artist.genre])
-
-    return artist
+    nil
   end
 end

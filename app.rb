@@ -22,6 +22,14 @@ class Application < Sinatra::Base
     return response
   end
 
+  get('/artists') do
+    repo = ArtistRepository.new
+    artist = repo.find(params[:id].to_i)
+    response = "Artist details: \nName: #{artist.name}\nGenre: #{artist.genre}"
+
+    return response
+  end
+  
   post '/artists' do
     repo = ArtistRepository.new
     new_artist = Artist.new

@@ -1,56 +1,44 @@
 #file: lib/album_repository.rb
 
 require_relative 'album'
+require_relative 'artist_repository'
+require 'csv'
 
 class AlbumRepository
+  def initialize(file_path, artist_repository)
+    @file_path = 'data/albums_list.csv'
+    @artist_repository = artist_repository
+  end
+
   def all
     albums = []
 
-    # Send the SQL query and get the result set.
-    sql = 'SELECT id, title, release_year, artist_id FROM albums;'
-    result_set = DatabaseConnection.exec_params(sql, [])
-    
-    # The result set is an array of hashes.
-    # Loop through it to create a model
-    # object for each record hash.
-    result_set.each do |record|
+    CSV.foreach(@file_path, headers: true) do |row|
+      artist = @artist_repository.find(row['artist_id'].to_i)
 
-      # Create a new model object
-      # with the record data.
       album = Album.new
-      album.id = record['id'].to_i
-      album.title = record['title']
-      album.release_year = record['release_year']
-      album.artist_id = record['artist_id'].to_i
-
+      album.id = row['id'].to_i
+      album.title = row['title']
+      album.artist = artist
       albums << album
     end
 
-    return albums
+    albums
   end
 
   def find(id)
-    sql = 'SELECT id, title, release_year, artist_id FROM albums WHERE id = $1;'
-    result_set = DatabaseConnection.exec_params(sql, [id])
+    CSV.foreach(@file_path, headers: true) do |row|
+      if row['id'].to_i == id
+        artist = @artist_repository.find(row['artist_id'].to_i)
 
-    album = Album.new
-    album.id = result_set[0]['id'].to_i
-    album.title = result_set[0]['title']
-    album.release_year = result_set[0]['release_year']
-    album.artist_id = result_set[0]['artist_id'].to_i
+        album = Album.new
+        album.id = row['id'].to_i
+        album.title = row['title']
+        album.artist = artist
+        return album
+      end
+    end
 
-    return album
+    nil
   end
-
-  def create(album)
-    sql = 'INSERT INTO albums (title, release_year, artist_id) VALUES ($1, $2, $3);'
-    result_set = DatabaseConnection.exec_params(sql, [album.title, album.release_year, album.artist_id])
-
-    return album
-  end
-
-  def delete(id)
-    sql = 'DELETE FROM albums WHERE id = $1;';
-    DatabaseConnection.exec_params(sql, [id]);
-  end
-end  
+end

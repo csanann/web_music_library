@@ -1,0 +1,9 @@
+<ul>
+  <% albums.each do |album| %>
+    <li>
+      <%= album.title %>
+      by <%= album.artist.name %>
+      (<a href="/albums/<%= album.id %>">details</a>)
+    </li>
+  <% end %>
+</ul>

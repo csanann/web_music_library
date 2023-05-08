@@ -1,5 +1,34 @@
-#file: spec/artist_repository_spec.rb
+# file: spec/artist_repository_spec.rb
 
+require 'artist_repository'
+require_relative '/Users/chayadasansiriwong/Desktop/csanann/Projects/web_music_library/data/artists_list.csv'
+
+describe ArtistRepository do
+  let(:repo) { ArtistRepository.new }
+
+  describe '#all' do
+    it 'returns all artists in the database' do
+      expect(repo.all.length).to eq(5)
+    end
+  end
+
+  describe '#find' do
+    it 'returns the artist with the given ID' do
+      artist = repo.find(1)
+      expect(artist.id).to eq(1)
+      expect(artist.name).to eq('Fleetwood Mac')
+      expect(artist.genre).to eq('Soft Rock')
+    end
+
+    it 'returns nil if the artist does not exist' do
+      expect(repo.find(100)).to be_nil
+    end
+  end
+end
+
+
+=begin
+#file: spec/artist_repository_spec.rb
 require 'artist'
 require 'artist_repository'
 
@@ -46,3 +75,4 @@ describe ArtistRepository do
     expect(artists.last.name).to eq('Kiasmos')
   end
 end
+=end

@@ -1,6 +1,8 @@
 require "spec_helper"
 require "rack/test"
 require_relative '../../app'
+require '/Users/chayadasansiriwong/Desktop/csanann/Projects/web_music_library/data/albums_list.csv'
+require '/Users/chayadasansiriwong/Desktop/csanann/Projects/web_music_library/data/artists_list.csv'
 
 describe Application do
   # This is so we can use rack-test helper methods.
