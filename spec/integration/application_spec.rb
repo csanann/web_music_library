@@ -1,38 +1,37 @@
 require "spec_helper"
 require "rack/test"
 require_relative '../../app'
-require '/Users/chayadasansiriwong/Desktop/csanann/Projects/web_music_library/data/albums_list.csv'
-require '/Users/chayadasansiriwong/Desktop/csanann/Projects/web_music_library/data/artists_list.csv'
+require 'csv'
 
-describe Application do
-  # This is so we can use rack-test helper methods.
+RSpec.describe Application do
   include Rack::Test::Methods
 
-  # We need to declare the `app` value by instantiating the Application
-  # class so our tests work.
+
   let(:app) { Application.new }
 
   context "GET /artists" do
     it 'returns the list of artists' do
       response = get('/artists')
 
-      expect_response = 'Pixies, ABBA, Taylor Swift, Nina Simone, Kiasmos'
+      expect_response = 'Fleetwood Mac, Elton John, Phil Collins, Air Supply, James Taylor'
 
       expect(response.status).to eq(200)
       expect(response.body).to eq(expect_response)
     end
   end
-  
 
+#testing whether the server can create a new artist with the provided data and responses or not 
   context "POST /artists" do
-    it 'creates a new artist' do
-      response = post('/artists', id: '1', name: 'Wild nothing', genre: 'Indie')
+    it 'creates and returns a new artist' do
+      artist_data = {id: '1', name: 'Wild nothing', genre: 'Indie'}
+      response = post('/artists', artist_data.to_json)
+
 
       expect(response.status).to eq(200)
-      expect(response.body).to eq('')
+      expect(response.body).to eq(artist_data.to_json)
+
 
       response = get('/artists')
-
       expect(response.body).to include('Wild nothing')
     end
   end
